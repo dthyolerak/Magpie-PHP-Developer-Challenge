@@ -9,10 +9,15 @@ class Scrape
     private array $products = [];
 
     public function run(): void
-    {
-        $document = ScrapeHelper::fetchDocument('https://www.magpiehq.com/developer-challenge/smartphones');
-
-        file_put_contents('output.json', json_encode($this->products));
+    {   
+        
+        
+        $url = "https://www.magpiehq.com/developer-challenge/smartphones/";
+        for ($i=0; $i < 3 ; $i++) { 
+            $document[$i] = ScrapeHelper::fetchDocument($url.'?page='.$i+1);
+        }
+        $this->products = Product::getProducts($document); //
+        file_put_contents('output.json', str_replace("\/", "/",json_encode($this->products)));
     }
 }
 

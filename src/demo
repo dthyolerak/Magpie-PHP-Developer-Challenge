@@ -1,0 +1,22 @@
+<?php
+
+namespace App;
+
+use Symfony\Component\DomCrawler\Crawler;
+
+class Product
+{
+    public static function getProducts($document){
+        $array = [];
+       $doc = $document->filter("div.music-container div.music-card")->each(function(Crawler $list, $index) use(&$array){
+            $array[$index] = [
+                'music-number' => (int)filter_var("hello famil12 there $index", FILTER_SANITIZE_NUMBER_INT),
+                'title' => $list->filter("h2")->text(),
+                'image' => str_replace("\/", "/", $list->filter("img")->attr('src')),
+            ];
+        });
+        print_r($array);
+       
+        return  array_values(array_unique($array,SORT_REGULAR));
+    }
+}

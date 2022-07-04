@@ -19,4 +19,5 @@ class Product
        
         return  array_values(array_unique($array,SORT_REGULAR));
     }
+    // $node->filter("span.rounded-full")->attr("data-colour"),
 }

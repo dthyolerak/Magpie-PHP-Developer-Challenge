@@ -11,18 +11,22 @@ class Product
        
         if ($document) {
             foreach ($document as $key => $currentDocument) {
-                
-                    $currentDocument->filter("div.flex-wrap div.product")->each(function(Crawler $node, $index) use(&$products){
+                    $getCorrentColour = $document[$key];
+                    $currentDocument->filter("div.flex-wrap div.product")->each(function(Crawler $node, $index) use(&$products,&$getCorrentColour){
                         $products[] = [
                         'title' => $node->filter("span.product-name")->text(""),
                         'price' => str_replace("£","", $node->filter("div.text-lg")->text("")),
                         'image' => $node->filter("img")->attr('src'),
                         'capacityMB' => Product::getCapacityMB($node->filter("span.product-capacity")->text("")),
-                        'colour' => $node->filter("span.rounded-full")->attr("data-colour"),
-                        'availabilityText'=> str_replace("Availability:","", $node->filter("div.text-sm")->text("")),
-                        'isAvailable'=> ($node->filter("div.text-sm")->text("") != "Out of Stock") ? "true" : "false" ,
+                        'colour' => $node->filter("div.px-2 span.rounded-full")->each(function(Crawler $node, $index) use(&$colour){
+                            $colour = $node->filter("span.rounded-full")->attr("data-colour");
+                            return $colour;
+                            
+                        }),
+                        'availabilityText'=> $availabilityText = str_replace("Availability:","", $node->filter("div.text-sm")->text("")),
+                        'isAvailable'=> ( str_contains($availabilityText, "Out of Stock") ) ? "false" : "true" ,
                         'shippingText'=> ($node->filter("div.text-sm")->last()->text("") == "Availability: Out of Stock") ? ""  : $node->filter("div.text-sm")->last()->text(""),
-                        'shippingDate'=>substr($node->filter("div.text-sm")->last()->text(""), -11)
+                        'shippingDate'=>substr($node->filter("div.text-sm")->last()->text(""), -11) 
                         
                     ];
                 });
@@ -50,14 +54,14 @@ class Product
 
     private static function getColour( $currentNode){
      
-            $colour = "";
-            $currentNode->filter("div.px-2 span.rounded-full")->each(function(Crawler $node, $index) use(&$colour){
-                $colour .= $node->filter("span.rounded-full")->attr("data-colour"). ',';
-                print_r($colour);
+            // $colour = "";
+            //   filter("div.px-2 span.rounded-full")->each(function(Crawler $node, $index) use(&$colour){
+            //     $colour .= $node->filter("span.rounded-full")->attr("data-colour"). ', ';
                 
-            });
+                
+            // });
             
-            return $colour ;
+            // return $colour ;
         
     }
 }

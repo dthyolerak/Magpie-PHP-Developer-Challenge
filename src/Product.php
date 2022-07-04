@@ -11,7 +11,7 @@ class Product
        
         if ($document) {
             foreach ($document as $key => $currentDocument) {
-                    $getCorrentColour = $document[$key];
+                    //getting data and put them in array
                     $currentDocument->filter("div.flex-wrap div.product")->each(function(Crawler $node, $index) use(&$products,&$getCorrentColour){
                         $products[] = [
                         'title' => $node->filter("span.product-name")->text(""),
@@ -28,10 +28,9 @@ class Product
                 });
                 
             }
-            // return $pro;
         }
         print_r($products);
-        return  array_values(array_unique($products,SORT_REGULAR));
+        return  array_values(array_unique($products,SORT_REGULAR)); //returing product in array, removing duplicats of array, and resetting array keys
     }
 
     //function for getting capacity of phone in mbs
@@ -48,18 +47,25 @@ class Product
     }
     //end of function: getting capacity of phone in mbs
 
+    //function to get colours of product
     private static function getColour( $currentNode){
      
             $colour = [];
+            //creating array of colours
             $currentNode->each(function(Crawler $node, $index) use(&$colour){
                 $colour[] = $node->filter("span.rounded-full")->attr("data-colour");
                 
             });
-            $colour = str_replace(array("[", '"',"]"), "",json_encode($colour));
+            //end of creating array of colours
+
+            $colour = str_replace(array("[", '"',"]"), "",json_encode($colour)); //converting array to string
             return $colour ;
     
     }
-    
+    //end of function to get colours of product
+
+
+    //function to date of shipping product
     public static function getDate(string $shippingDate){
         $date = "";
         if (($pos = strpos($shippingDate, "Delivers")) !== FALSE) { 
@@ -71,15 +77,11 @@ class Product
         if (($pos = strpos($shippingDate, "have it")) !== FALSE) { 
             $date = substr($shippingDate, $pos+8); 
         }
-        if (($pos = strpos($shippingDate, "Available on")) !== FALSE) { 
-            $date = substr($shippingDate, $pos+13); 
-        }
-        if (($pos = strpos($shippingDate, "Available on")) !== FALSE) { 
-            $date = substr($shippingDate, $pos+13); 
-        }
+        
         if (($pos = strpos($shippingDate, "Available on")) !== FALSE) { 
             $date = substr($shippingDate, $pos+13); 
         }
         return $date;
     }
+    //end of function to date of shipping product
 }

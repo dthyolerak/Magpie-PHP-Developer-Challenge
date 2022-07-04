@@ -37,10 +37,7 @@ Please also send us your `output.json`.
 * Don’t forget the pagination!
 * You will be assessed both on successfully generating the correct output data in output.json, and also on the quality of your code.
 
-### Useful Resources
-* https://symfony.com/doc/current/components/dom_crawler.html
-* https://symfony.com/doc/current/components/css_selector.html
-* https://github.com/jupeter/clean-code-php
+
 
 ### Requirements
 
@@ -50,9 +47,8 @@ Please also send us your `output.json`.
 ### Setup
 
 ```
-git clone git@github.com:stickeeuk/magpie-scrape-challenge.git
+git clone https://github.com/dthyolerak/Magpie-PHP-Developer-Challenge.git
 cd magpie-scrape-challenge
-composer install
 ```
 
 To run the scrape you can use `php src/Scrape.php`

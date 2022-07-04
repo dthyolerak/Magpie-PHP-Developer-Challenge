@@ -38,7 +38,6 @@ Please also send us your `output.json`.
 * You will be assessed both on successfully generating the correct output data in output.json, and also on the quality of your code.
 
 
-
 ### Requirements
 
 * PHP 7.4+
@@ -48,6 +47,8 @@ Please also send us your `output.json`.
 
 ```
 git clone https://github.com/dthyolerak/Magpie-PHP-Developer-Challenge.git
+
+composer install
 cd magpie-scrape-challenge
 ```
 

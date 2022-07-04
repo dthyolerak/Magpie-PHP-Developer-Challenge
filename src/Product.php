@@ -22,7 +22,7 @@ class Product
                         'availabilityText'=> $availabilityText = str_replace("Availability:","", $node->filter("div.text-sm")->text("")),
                         'isAvailable'=> ( str_contains($availabilityText, "Out of Stock") ) ? "false" : "true" ,
                         'shippingText'=> ($node->filter("div.text-sm")->last()->text("") == "Availability: Out of Stock") ? ""  : $node->filter("div.text-sm")->last()->text(""),
-                        'shippingDate'=>substr($node->filter("div.text-sm")->last()->text(""), -11) 
+                        'shippingDate'=> Product::getDate($node->filter("div.text-sm")->last()->text("")),
                         
                     ];
                 });
@@ -58,5 +58,28 @@ class Product
             $colour = str_replace(array("[", '"',"]"), "",json_encode($colour));
             return $colour ;
     
+    }
+    
+    public static function getDate(string $shippingDate){
+        $date = "";
+        if (($pos = strpos($shippingDate, "Delivers")) !== FALSE) { 
+            $date = substr($shippingDate, $pos+9); 
+        }
+        if (($pos = strpos($shippingDate, "Delivery")) !== FALSE) { 
+            $date = substr($shippingDate, $pos+8); 
+        }
+        if (($pos = strpos($shippingDate, "have it")) !== FALSE) { 
+            $date = substr($shippingDate, $pos+8); 
+        }
+        if (($pos = strpos($shippingDate, "Available on")) !== FALSE) { 
+            $date = substr($shippingDate, $pos+13); 
+        }
+        if (($pos = strpos($shippingDate, "Available on")) !== FALSE) { 
+            $date = substr($shippingDate, $pos+13); 
+        }
+        if (($pos = strpos($shippingDate, "Available on")) !== FALSE) { 
+            $date = substr($shippingDate, $pos+13); 
+        }
+        return $date;
     }
 }

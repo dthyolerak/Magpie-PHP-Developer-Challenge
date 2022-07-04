@@ -16,13 +16,9 @@ class Product
                         $products[] = [
                         'title' => $node->filter("span.product-name")->text(""),
                         'price' => str_replace("£","", $node->filter("div.text-lg")->text("")),
-                        'image' => $node->filter("img")->attr('src'),
+                        'image' => str_replace("../",'',"https://www.magpiehq.com/developer-challenge/".$node->filter("img")->attr('src')),
                         'capacityMB' => Product::getCapacityMB($node->filter("span.product-capacity")->text("")),
-                        'colour' => $node->filter("div.px-2 span.rounded-full")->each(function(Crawler $node, $index) use(&$colour){
-                            $colour = $node->filter("span.rounded-full")->attr("data-colour");
-                            return $colour;
-                            
-                        }),
+                        'colour' => Product::getColour($node->filter("div.px-2 span.rounded-full")),
                         'availabilityText'=> $availabilityText = str_replace("Availability:","", $node->filter("div.text-sm")->text("")),
                         'isAvailable'=> ( str_contains($availabilityText, "Out of Stock") ) ? "false" : "true" ,
                         'shippingText'=> ($node->filter("div.text-sm")->last()->text("") == "Availability: Out of Stock") ? ""  : $node->filter("div.text-sm")->last()->text(""),
@@ -54,14 +50,13 @@ class Product
 
     private static function getColour( $currentNode){
      
-            // $colour = "";
-            //   filter("div.px-2 span.rounded-full")->each(function(Crawler $node, $index) use(&$colour){
-            //     $colour .= $node->filter("span.rounded-full")->attr("data-colour"). ', ';
+            $colour = [];
+            $currentNode->each(function(Crawler $node, $index) use(&$colour){
+                $colour[] = $node->filter("span.rounded-full")->attr("data-colour");
                 
-                
-            // });
-            
-            // return $colour ;
-        
+            });
+            $colour = str_replace(array("[", '"',"]"), "",json_encode($colour));
+            return $colour ;
+    
     }
 }

@@ -29,7 +29,7 @@ class Product
                 
             }
         }
-        print_r($products);
+        $products = Product::duplicateProductByColour($products);
         return  array_values(array_unique($products,SORT_REGULAR)); //returing product in array, removing duplicats of array, and resetting array keys
     }
 
@@ -58,7 +58,7 @@ class Product
             });
             //end of creating array of colours
 
-            $colour = str_replace(array("[", '"',"]"), "",json_encode($colour)); //converting array to string
+           // $colour = str_replace(array("[", '"',"]"), "",json_encode($colour)); //converting array to string
             return $colour ;
     
     }
@@ -83,5 +83,33 @@ class Product
         }
         return $date;
     }
-    //end of function to date of shipping product
+    //end of function to get date of shipping product
+
+    //function that make Each colour variant to be treated as a separate product.
+    private static function duplicateProductByColour($products){
+        $new_products = [];
+
+        if ($products) {
+            foreach ($products as $key => $products_value) {
+                if($products_value['colour']){
+                    foreach ($products_value['colour'] as $new_products_value) {
+                        $new_products[] = [
+                            'title' => $products_value['title'],
+                            'price' => $products_value['price'],
+                            'image' => $products_value['image'],
+                            'capacityMB' => $products_value['capacityMB'],
+                            'colour' => $new_products_value,
+                            'availabilityText'=> $products_value['availabilityText'],
+                            'isAvailable'=> $products_value['isAvailable'],
+                            'shippingText'=> $products_value['shippingText'],
+                            'shippingDate'=> $products_value['shippingDate'],
+                        ];
+                    }
+                }
+            }
+        }
+        print_r($new_products);
+        return $new_products;
+    }
+   // end of function that make Each colour variant to be treated as a separate product.//
 }

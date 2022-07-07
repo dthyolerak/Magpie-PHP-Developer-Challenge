@@ -22,7 +22,7 @@ class Product
                         'availabilityText'=> $availabilityText = str_replace("Availability:","", $node->filter("div.text-sm")->text("")),
                         'isAvailable'=> ( str_contains($availabilityText, "Out of Stock") ) ? "false" : "true" ,
                         'shippingText'=> ($node->filter("div.text-sm")->last()->text("") == "Availability: Out of Stock") ? ""  : $node->filter("div.text-sm")->last()->text(""),
-                        'shippingDate'=> Product::getDate($node->filter("div.text-sm")->last()->text("")),
+                        'shippingDate'=> $node->filter("div.text-sm")->last()->text(""),
                         
                     ];
                 });
@@ -38,7 +38,7 @@ class Product
         $totalCapacityMB = "";
         if (substr($capacity, -2) == "GB") { //Checking if capacity is in GB
             $getGB = (int)filter_var($capacity, FILTER_SANITIZE_NUMBER_INT);//getting numerical value from string given
-            $totalCapacityMB = 8000 * $getGB;
+            $totalCapacityMB = 1000 * $getGB;
         }else{
             $totalCapacityMB = (int)filter_var($capacity, FILTER_SANITIZE_NUMBER_INT); //getting numerical value from string given
         }
@@ -68,19 +68,36 @@ class Product
     //function to date of shipping product
     public static function getDate(string $shippingDate){
         $date = "";
-        if (($pos = strpos($shippingDate, "Delivers")) !== FALSE) { 
-            $date = substr($shippingDate, $pos+9); 
-        }
-        if (($pos = strpos($shippingDate, "Delivery")) !== FALSE) { 
-            $date = substr($shippingDate, $pos+8); 
-        }
-        if (($pos = strpos($shippingDate, "have it")) !== FALSE) { 
-            $date = substr($shippingDate, $pos+8); 
-        }
         
-        if (($pos = strpos($shippingDate, "Available on")) !== FALSE) { 
-            $date = substr($shippingDate, $pos+13); 
+        if (str_contains($shippingDate , "Jul") || str_contains($shippingDate , "Aug")) { 
+            $month = "";
+            $day = "";
+            $contain_date = substr($shippingDate, -15);
+            if (str_contains($shippingDate , "Jul")) {
+               $month = "07";
+               $arr = explode("Jul", $contain_date , 2);
+               $day = $arr[0];
+            }
+            if(str_contains($shippingDate , "Aug")){
+                $month = "08";
+                $arr = explode("Aug", $contain_date , 2);
+                $day = $arr[0];
+            }
+
+            $date = "2022-". $month ."-". $retVal = (strlen((int) filter_var($day, FILTER_SANITIZE_NUMBER_INT) ) > 1) ?(int) filter_var($day, FILTER_SANITIZE_NUMBER_INT) : "0".(int) filter_var($day, FILTER_SANITIZE_NUMBER_INT);
         }
+        if (str_contains($shippingDate , "2022-")) { 
+            $date = substr($shippingDate, -10); 
+        }
+        if (str_contains($shippingDate , "tomorrow")) {
+            $tomorrow = strtotime("+1 day");
+
+            //Format the timestamp into a date string
+            $date = date("Y-m-d", $tomorrow);
+        }
+
+        //jul, aug,
+       
         return $date;
     }
     //end of function to get date of shipping product
@@ -102,7 +119,7 @@ class Product
                             'availabilityText'=> $products_value['availabilityText'],
                             'isAvailable'=> $products_value['isAvailable'],
                             'shippingText'=> $products_value['shippingText'],
-                            'shippingDate'=> $products_value['shippingDate'],
+                            'shippingDate'=>Product::getDate( $products_value['shippingDate']),
                         ];
                     }
                 }
